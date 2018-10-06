@@ -14,60 +14,77 @@ namespace DataAccess
 
         public DataTable GetDataTable(string sql)
         {
-            using (SqlConnection conn = new SqlConnection(connString))
+            try
             {
-                SqlDataAdapter dad = new SqlDataAdapter(new SqlCommand(sql, conn));
-                
-                DataSet dst = new DataSet();
-                dad.Fill(dst);
-                return dst.Tables[0];
+                using (SqlConnection conn = new SqlConnection(connString))
+                {
+                    SqlDataAdapter dad = new SqlDataAdapter(new SqlCommand(sql, conn));
+
+                    DataSet dst = new DataSet();
+                    dad.Fill(dst);
+                    return dst.Tables[0];
+                }
             }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
         }
 
         public DataTable GetDataTable(string spName, List<SqlParameter> sqlParams)
         {
-            using (SqlConnection conn = new SqlConnection(connString))
-            {           
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connString))
+                {
 
-                SqlCommand cmd = new SqlCommand(spName, conn);
-                cmd.CommandType = CommandType.StoredProcedure;
+                    SqlCommand cmd = new SqlCommand(spName, conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
 
-                foreach (SqlParameter param in sqlParams)
-                { 
-                    cmd.Parameters.Add(param);
+                    foreach (SqlParameter param in sqlParams)
+                    {
+                        cmd.Parameters.Add(param);
+                    }
+
+                    SqlDataAdapter dad = new SqlDataAdapter(cmd);
+                    DataSet dst = new DataSet();
+                    dad.Fill(dst);
+                    return dst.Tables[0];
                 }
-
-                SqlDataAdapter dad = new SqlDataAdapter(cmd);
-                DataSet dst = new DataSet();
-                dad.Fill(dst);
-                return dst.Tables[0];
             }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            
         }
 
         public int ExecuteSP (List<SqlParameter> sqlParams, string spName)
         {
-            using (SqlConnection conn = new SqlConnection(connString))
+            try
             {
-                conn.Open();
-                SqlCommand cmd = new SqlCommand(spName, conn);
-                cmd.CommandType = CommandType.StoredProcedure;
+                using (SqlConnection conn = new SqlConnection(connString))
+                {
+                    conn.Open();
+                    SqlCommand cmd = new SqlCommand(spName, conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
 
-                foreach (SqlParameter param in sqlParams)
-                {
-                    cmd.Parameters.Add(param);
-                }
-                int retVal = 0;
-                try
-                {
+                    foreach (SqlParameter param in sqlParams)
+                    {
+                        cmd.Parameters.Add(param);
+                    }
+                    int retVal = 0;
                     retVal = cmd.ExecuteNonQuery();
+                    conn.Close();
+                    return retVal;
                 }
-                catch (Exception ex)
-                {
-
-                }
-                conn.Close();
-                return retVal;
             }
+            catch (Exception ex)
+            {
+                return -1;
+            }
+            
         }
         public List<Category> GetCategories()
         {

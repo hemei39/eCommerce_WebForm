@@ -1,12 +1,4 @@
-﻿USE [NorthWind]
-GO
-
-
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
+﻿
 
 CREATE TABLE [dbo].[ShoppingCart](
 	[Username] [nvarchar](50) NOT NULL,

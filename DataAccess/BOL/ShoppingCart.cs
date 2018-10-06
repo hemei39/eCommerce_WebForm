@@ -5,7 +5,7 @@ using System.Web;
 
 namespace DataAccess
 {
-    public class ShoppingCart
+    public partial class ShoppingCart
     {
         public string Username { get; set;}
         public int ProductID { get; set; }
